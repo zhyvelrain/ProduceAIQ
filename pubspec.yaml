@@ -1,0 +1,50 @@
+name: produceaiq
+description: "ProduceAIQ - produce recognition, freshness and recipe suggestions."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.12.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  camera: ^0.12.0+2
+  image_picker: ^1.1.2
+  google_fonts: ^8.2.1
+  firebase_core: ^4.13.0
+  cloud_firestore: ^6.8.0
+  # FIX #7: removed firebase_storage and cloud_functions
+  tflite_flutter: ^0.12.1
+  image: ^4.0.15
+  shared_preferences: ^2.3.2
+  cupertino_icons: ^1.0.8
+  http: ^1.6.0
+  video_player: ^2.9.2
+  url_launcher: ^6.3.1
+  connectivity_plus: ^6.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.13.1
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/produceaiq_logo.jpg"
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/produce_model.tflite
+    # Remove the next line ONLY if you have no trained freshness model file;
+    # the app already falls back to the heuristic when it can't load.
+    - assets/produce_freshness_model.tflite
+    - assets/labels.txt
+    - assets/secrets/
+    - assets/videos/how_it_works.mp4
+    - assets/image/disambiguation_sample.jpg
+    - assets/splash/splash.png

@@ -1,0 +1,7 @@
+{
+    "cmake.sourceDirectory": "C:/Users/admin/Downloads/ProduceAIQ-Project/produceaiq/linux",
+    "python.analysis.diagnosticSeverityOverrides": {
+        "reportMissingModuleSource": "none"
+    },
+    "python-envs.defaultEnvManager": "ms-python.python:system"
+}

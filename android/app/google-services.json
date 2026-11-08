@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "311633193180",
+    "project_id": "produceaiq",
+    "storage_bucket": "produceaiq.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:311633193180:android:4cab44311eded6bf122c19",
+        "android_client_info": {
+          "package_name": "com.example.produceaiq"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4cf5mJnVtyH-Qv8g8COye0hFgiEEwtM4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

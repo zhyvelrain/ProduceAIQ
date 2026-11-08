@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="tl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>ProduceAIQ Home Grid Prototype v2</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(180deg, #EAF5EC 0%, #DBEFE1 50%, #CCE8D4 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    /* App Bar */
+    .app-bar {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(16, 185, 129, 0.15);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .app-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo-sm {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    }
+    .logo-sm svg { width: 24px; height: 24px; }
+    .app-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #047857;
+      letter-spacing: -0.3px;
+    }
+    .connectivity {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 16px;
+      font-size: 11px;
+      font-weight: 600;
+      background: #ECFDF5;
+      color: #047857;
+      border: 1px solid #A7F3D0;
+    }
+    .connectivity.offline {
+      background: #FEF2F2;
+      color: #DC2626;
+      border-color: #FECACA;
+    }
+    .connectivity svg { width: 14px; height: 14px; }
+
+    /* Main content */
+    .main {
+      flex: 1;
+      padding: 24px 20px 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 420px;
+      margin: 0 auto;
+    }
+    .welcome {
+      text-align: center;
+      margin-bottom: 24px;
+      padding: 0 8px;
+    }
+    .welcome h1 {
+      font-size: 26px;
+      font-weight: 800;
+      color: #0F172A;
+      margin-bottom: 6px;
+      letter-spacing: -0.4px;
+    }
+    .welcome p {
+      font-size: 14px;
+      color: #3A3D36;
+      font-weight: 500;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      width: 100%;
+    }
+    .module-btn {
+      aspect-ratio: 1;
+      border-radius: 20px;
+      border: none;
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+      box-shadow: 
+        0 6px 20px rgba(0,0,0,0.12),
+        0 0 0 1px rgba(255,255,255,0.6) inset;
+      position: relative;
+      overflow: hidden;
+    }
+    .module-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 50%);
+      pointer-events: none;
+    }
+    .module-btn:active { transform: scale(0.96); }
+    .module-btn:focus-visible { outline: 3px solid rgba(16, 185, 129, 0.5); outline-offset: 2px; }
+    .module-btn svg { width: 40px; height: 40px; }
+    .module-btn .label {
+      font-size: 15px;
+      font-weight: 700;
+      text-align: center;
+      line-height: 1.2;
+      color: white;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.25);
+    }
+    .module-btn .hint {
+      font-size: 10.5px;
+      font-weight: 500;
+      text-align: center;
+      color: rgba(255,255,255,0.9);
+      opacity: 0.9;
+    }
+
+    .scan { background: linear-gradient(135deg, #10B981 0%, #059669 100%); }
+    .guide { background: linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%); }
+    .terms { background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); }
+    .settings { background: linear-gradient(135deg, #64748B 0%, #475569 100%); }
+
+    /* Bottom bar (persistent nav) */
+    .bottom-bar {
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid rgba(16, 185, 129, 0.12);
+      padding: 8px 16px 12px;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+      z-index: 100;
+    }
+    .bottom-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 12px;
+      border-radius: 12px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      transition: background 0.15s;
+      min-width: 64px;
+    }
+    .bottom-btn:active { background: rgba(16, 185, 129, 0.1); }
+    .bottom-btn svg { width: 24px; height: 24px; color: #64748B; }
+    .bottom-btn.active svg { color: #10B981; }
+    .bottom-btn .label {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: #64748B;
+    }
+    .bottom-btn.active .label { color: #10B981; }
+
+    .footer-note {
+      margin-top: 100px; /* space for fixed bottom bar */
+      font-size: 11px;
+      color: #6B7280;
+      text-align: center;
+      padding: 16px;
+    }
+  </style>
+</head>
+<body>
+  <!-- App Bar -->
+  <header class="app-bar" role="banner">
+    <div class="app-bar-left">
+      <div class="logo-sm" role="img" aria-label="ProduceAIQ logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
+          <path d="M8 12l2 2 4-4"/>
+          <path d="M12 8v4"/>
+        </svg>
+      </div>
+      <span class="app-title">ProduceAIQ</span>
+    </div>
+    <div class="connectivity" id="connectivity" aria-live="polite">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12.55a11 11 0 0 1 14.08 0"/>
+        <path d="M1.42 9a16 16 0 0 1 21.16 0"/>
+        <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
+        <line x1="12" y1="20" x2="12.01" y2="20"/>
+      </svg>
+      <span>Online</span>
+    </div>
+  </header>
+
+  <!-- Main content with grid -->
+  <main class="main" role="main">
+    <div class="welcome">
+      <h1>Kumusta, Magsasaka!</h1>
+      <p>Pumili ng module para simulan</p>
+    </div>
+
+    <div class="grid" role="navigation" aria-label="Mga pangunahing module">
+      <button class="module-btn scan" data-module="scan" aria-label="Simula - mag-scan ng produce">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          <path d="M12 7v5l3 3"/>
+        </svg>
+        <span class="label">Simula</span>
+        <span class="hint">I-scan ang produce</span>
+      </button>
+
+      <button class="module-btn guide" data-module="guide" aria-label="Gabay - paano gumamit">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M12 16v-4M12 8h.01"/>
+        </svg>
+        <span class="label">Gabay</span>
+        <span class="hint">Paano mag-scan at<br>ibig sabihin ng confidence</span>
+      </button>
+
+      <button class="module-btn terms" data-module="terms" aria-label="Tuntunin - terms at limitasyon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+          <polyline points="10 9 9 9 8 9"/>
+        </svg>
+        <span class="label">Tuntunin</span>
+        <span class="hint">Terms, limitasyon,<br>at disclaimer</span>
+      </button>
+
+      <button class="module-btn settings" data-module="settings" aria-label="Settings - account at theme">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+        <span class="label">Settings</span>
+        <span class="hint">Account, theme,<br>at preferences</span>
+      </button>
+    </div>
+  </main>
+
+  <!-- Persistent bottom bar -->
+  <nav class="bottom-bar" role="navigation" aria-label="Pangunahing navigation">
+    <button class="bottom-btn active" data-tab="home" aria-label="Home" aria-current="page">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+        <polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
+      <span class="label">Home</span>
+    </button>
+    <button class="bottom-btn" data-tab="scan" aria-label="I-scan">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        <path d="M12 7v5l3 3"/>
+      </svg>
+      <span class="label">Scan</span>
+    </button>
+    <button class="bottom-btn" data-tab="history" aria-label="Kasaysayan">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <polyline points="12 6 12 12 16 14"/>
+      </svg>
+      <span class="label">Kasaysayan</span>
+    </button>
+    <button class="bottom-btn" data-tab="settings" aria-label="Settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
+      <span class="label">Settings</span>
+    </button>
+  </nav>
+
+  <p class="footer-note">Prototype v2 — App bar + logo retained, 2×2 grid below, persistent bottom nav for deep-link escape hatches.</p>
+
+  <script>
+    document.querySelectorAll('.module-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const mod = btn.dataset.module;
+        alert(`Navigate to: ${mod.charAt(0).toUpperCase() + mod.slice(1)} module`);
+      });
+    });
+    document.querySelectorAll('.bottom-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.bottom-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+    // Simulate connectivity toggle
+    document.getElementById('connectivity').addEventListener('click', (e) => {
+      const el = e.currentTarget;
+      el.classList.toggle('offline');
+      el.querySelector('span').textContent = el.classList.contains('offline') ? 'Offline' : 'Online';
+    });
+  </script>
+</body>
+</html>
